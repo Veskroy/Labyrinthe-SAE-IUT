@@ -102,3 +102,14 @@ class Maze:
             self.neighbors[c1].remove(c2) # on le retire
         if c1 in self.neighbors[c2]:      # Si c3 est dans les voisines de c2
             self.neighbors[c2].remove(c1) # on le retire
+
+
+    def remove_wall(self, c1, c2):
+        assert 0 <= c1[0] < self.height and \
+            0 <= c1[1] < self.width and \
+            0 <= c2[0] < self.height and \
+            0 <= c2[1] < self.width, \
+            f"Erreur lors de la suppression d'un mur entre {c1} et {c2} : les coordonnées de sont pas compatibles avec les dimensions du labyrinthe"
+        # Suppression du mur
+        self.neighbors[c1].add(c2)
+        self.neighbors[c2].add(c1)
