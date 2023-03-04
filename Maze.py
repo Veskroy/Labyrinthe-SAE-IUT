@@ -141,3 +141,10 @@ class Maze:
         Vide le labyrinthe en supprimant tous les murs
         """
         self.neighbors = Maze(self.height, self.width, True).neighbors
+
+
+    def get_contiguous_cells(self, c: tuple) -> list:
+        """
+        Retourne la liste des cellules contigues à la cellule c
+        """
+        return list(Maze(self.height, self.width, True).neighbors[c])
