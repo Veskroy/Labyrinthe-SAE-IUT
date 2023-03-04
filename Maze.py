@@ -90,6 +90,10 @@ class Maze:
         return txt
 
 
+    def get_cells(self) -> list:
+        return list(self.neighbors.keys())
+
+
     def add_wall(self, c1, c2):
         # Facultatif : on teste si les sommets sont bien dans le labyrinthe
         assert 0 <= c1[0] < self.height and \
@@ -120,10 +124,10 @@ class Maze:
         Retourne la liste des murs du labyrinthe
         """
         walls = []
-        for c1 in self.neighbors:
-            if (c1[0], c1[1]+1) in self.neighbors.keys() and (c1[0], c1[1]+1) not in self.neighbors[c1]:
+        for c1 in self.get_cells():
+            if (c1[0], c1[1]+1) in self.get_cells() and (c1[0], c1[1]+1) not in self.neighbors[c1]:
                 walls.append([c1, (c1[0], c1[1]+1)])
-            if (c1[0]+1, c1[1]) in self.neighbors.keys() and (c1[0]+1, c1[1]) not in self.neighbors[c1]:
+            if (c1[0]+1, c1[1]) in self.get_cells() and (c1[0]+1, c1[1]) not in self.neighbors[c1]:
                 walls.append([c1, (c1[0]+1, c1[1])])
         return walls
 
