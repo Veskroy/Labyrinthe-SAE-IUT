@@ -16,20 +16,21 @@ class Maze:
         """
         self.height    = height
         self.width     = width
-        if empty is False:
-            self.neighbors = {(i,j): set() for i in range(height) for j in range(width)}
-        else:
-            self.neighbors = {}
+        self.neighbors = {(i,j): set() for i in range(height) for j in range(width)}
+        if empty is True:
             for i in range(height):
                 for j in range(width):
                     if i+1 < height and j+1 < width:
-                        self.neighbors[(i, j)] = {(i+1, j), (i, j+1)}
+                        print((i, j))
+                        self.neighbors[(i, j)].update({(i+1, j), (i, j+1)})
+                        self.neighbors[(i+1, j)].update({(i, j), (i+1, j+1)})
+                        self.neighbors[(i, j+1)].update({(i, j), (i+1, j+1)})
                     elif i+1 < height:
-                        self.neighbors[(i, j)] = {(i+1, j)}
+                        self.neighbors[(i, j)].update({(i+1, j)})
+                        self.neighbors[(i+1, j)].update({(i, j)})
                     elif j+1 < width:
-                        self.neighbors[(i, j)] = {(i, j+1)}
-                    else:
-                        self.neighbors[(i, j)] = set()
+                        self.neighbors[(i, j)].update({(i, j+1)})
+                        self.neighbors[(i, j+1)].update({(i, j)})
 
     def info(self):
         """
@@ -104,7 +105,7 @@ class Maze:
             self.neighbors[c2].remove(c1) # on le retire
 
 
-    def remove_wall(self, c1, c2):
+    def remove_wall(self, c1, c2) -> None:
         assert 0 <= c1[0] < self.height and \
             0 <= c1[1] < self.width and \
             0 <= c2[0] < self.height and \
@@ -113,3 +114,29 @@ class Maze:
         # Suppression du mur
         self.neighbors[c1].add(c2)
         self.neighbors[c2].add(c1)
+
+
+    def get_walls(self) -> list:
+        """
+        Retourne la liste des murs du labyrinthe
+        """
+        walls = []
+        # for c1 in self.neighbors:
+            # print(c1)
+            # for c2 in self.neighbors[c1]:
+        
+        # print(self.neighbors.values())
+        # if ({(1, 1), (0, 2)}) in self.neighbors.values():
+        #     print("ok")
+        
+        
+        successors = []
+        for values in self.neighbors.values():
+            for value in values:
+                if value not in successors:
+                    successors.append(value)
+        
+        for c1 in self.neighbors:
+            if c1 in successors:
+                walls.append(c1)
+        return walls
