@@ -127,3 +127,10 @@ class Maze:
                     if [c1, c2] not in walls and [c2, c1] not in walls:
                         walls.append([c1, c2])
         return walls
+
+
+    def fill(self) -> None:
+        """
+        Remplit le labyrinthe en ajoutant tous les murs
+        """
+        self.neighbors = Maze(self.height, self.width, False).neighbors
