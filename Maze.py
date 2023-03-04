@@ -148,3 +148,10 @@ class Maze:
         Retourne la liste des cellules contigues à la cellule c
         """
         return list(Maze(self.height, self.width, True).neighbors[c])
+
+
+    def get_reachable_cells(self, c: tuple) -> list:
+        """
+        Retourne la liste des cellules accessibles à partir de la cellule c
+        """
+        return list(self.neighbors[c])
