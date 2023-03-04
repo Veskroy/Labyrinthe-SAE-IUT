@@ -120,12 +120,11 @@ class Maze:
         Retourne la liste des murs du labyrinthe
         """
         walls = []
-        empty_laby_neighbors = Maze(self.height, self.width, True).neighbors
-        for c1 in empty_laby_neighbors:
-            for c2 in empty_laby_neighbors[c1]:
-                if c2 not in self.neighbors[c1] and c2 in empty_laby_neighbors[c1]:
-                    if [c1, c2] not in walls and [c2, c1] not in walls:
-                        walls.append([c1, c2])
+        for c1 in self.neighbors:
+            if (c1[0], c1[1]+1) in self.neighbors.keys() and (c1[0], c1[1]+1) not in self.neighbors[c1]:
+                walls.append([c1, (c1[0], c1[1]+1)])
+            if (c1[0]+1, c1[1]) in self.neighbors.keys() and (c1[0]+1, c1[1]) not in self.neighbors[c1]:
+                walls.append([c1, (c1[0]+1, c1[1])])
         return walls
 
 
