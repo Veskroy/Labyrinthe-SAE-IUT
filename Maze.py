@@ -21,7 +21,6 @@ class Maze:
             for i in range(height):
                 for j in range(width):
                     if i+1 < height and j+1 < width:
-                        print((i, j))
                         self.neighbors[(i, j)].update({(i+1, j), (i, j+1)})
                         self.neighbors[(i+1, j)].update({(i, j), (i+1, j+1)})
                         self.neighbors[(i, j+1)].update({(i, j), (i+1, j+1)})
