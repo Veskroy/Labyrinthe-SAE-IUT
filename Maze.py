@@ -146,7 +146,15 @@ class Maze:
         """
         Retourne la liste des cellules contigues à la cellule c
         """
-        return list(Maze(self.height, self.width, True).neighbors[c])
+        # méthode précédente
+        # return list(Maze(self.height, self.width, True).neighbors[c])
+        
+        contiguous_cells = []
+        contiguous_cells.append((c[0]-1, c[1])) if c[0]-1 >= 0 else None
+        contiguous_cells.append((c[0]+1, c[1])) if c[0]+1 < self.height else None
+        contiguous_cells.append((c[0], c[1]-1)) if c[1]-1 >= 0 else None
+        contiguous_cells.append((c[0], c[1]+1)) if c[1]+1 < self.width else None
+        return contiguous_cells
 
 
     def get_reachable_cells(self, c: tuple) -> list:
