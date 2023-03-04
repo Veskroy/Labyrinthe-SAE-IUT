@@ -16,7 +16,7 @@ class Maze:
         """
         self.height    = height
         self.width     = width
-        if empty is True:
+        if empty is False:
             self.neighbors = {(i,j): set() for i in range(height) for j in range(width)}
         else:
             self.neighbors = {}
