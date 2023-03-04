@@ -1,3 +1,6 @@
+import random
+
+
 class Maze:
     """
     Classe Labyrinthe
@@ -166,3 +169,22 @@ class Maze:
         Retourne la liste des cellules accessibles à partir de la cellule c
         """
         return list(self.neighbors[c])
+
+
+    @classmethod
+    def gen_btree(cls, height: int, width: int) -> 'Maze':
+        """
+        Génère un labyrinthe aléatoire selon l'algorithme "Binary Tree"
+        """
+        maze = Maze(height, width, False)
+        for x, y in maze.get_cells():
+            walls = list(set(maze.get_contiguous_cells((x, y))) - set(maze.get_reachable_cells((x, y))))
+            c_south = (x+1, y)
+            c_east = (x, y+1)
+            if c_south in walls and c_east in walls:
+                maze.remove_wall((x, y), (x, y+1)) if random.randint(0, 1) else maze.remove_wall((x, y), (x+1, y))
+            elif c_south in walls: 
+                maze.remove_wall((x, y), (x+1, y))
+            elif c_east in walls:
+                maze.remove_wall((x, y), (x, y+1))
+        return maze
