@@ -90,10 +90,12 @@ class Maze:
         return txt
 
 
+    @classmethod
     def get_cells(self) -> list:
         return list(self.neighbors.keys())
 
 
+    @classmethod
     def add_wall(self, c1, c2):
         # Facultatif : on teste si les sommets sont bien dans le labyrinthe
         assert 0 <= c1[0] < self.height and \
@@ -108,6 +110,7 @@ class Maze:
             self.neighbors[c2].remove(c1) # on le retire
 
 
+    @classmethod
     def remove_wall(self, c1, c2) -> None:
         assert 0 <= c1[0] < self.height and \
             0 <= c1[1] < self.width and \
@@ -119,6 +122,7 @@ class Maze:
         self.neighbors[c2].add(c1)
 
 
+    @classmethod
     def get_walls(self) -> list:
         """
         Retourne la liste des murs du labyrinthe
@@ -132,6 +136,7 @@ class Maze:
         return walls
 
 
+    @classmethod
     def fill(self) -> None:
         """
         Remplit le labyrinthe en ajoutant tous les murs
@@ -139,6 +144,7 @@ class Maze:
         self.neighbors = Maze(self.height, self.width, False).neighbors
 
 
+    @classmethod
     def empty(self) -> None:
         """
         Vide le labyrinthe en supprimant tous les murs
@@ -146,6 +152,7 @@ class Maze:
         self.neighbors = Maze(self.height, self.width, True).neighbors
 
 
+    @classmethod
     def get_contiguous_cells(self, c: tuple) -> list:
         """
         Retourne la liste des cellules contigues à la cellule c
@@ -161,6 +168,7 @@ class Maze:
         return contiguous_cells
 
 
+    @classmethod
     def get_reachable_cells(self, c: tuple) -> list:
         """
         Retourne la liste des cellules accessibles à partir de la cellule c
