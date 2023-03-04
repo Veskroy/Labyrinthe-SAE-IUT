@@ -134,3 +134,10 @@ class Maze:
         Remplit le labyrinthe en ajoutant tous les murs
         """
         self.neighbors = Maze(self.height, self.width, False).neighbors
+
+
+    def empty(self) -> None:
+        """
+        Vide le labyrinthe en supprimant tous les murs
+        """
+        self.neighbors = Maze(self.height, self.width, True).neighbors
