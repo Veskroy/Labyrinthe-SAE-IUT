@@ -7,7 +7,7 @@ class Maze:
         - clés : sommets
         - valeurs : ensemble des sommets voisins accessibles
     """
-    def __init__(self, height, width):
+    def __init__(self, height: int, width: int, empty: bool):
         """
         Constructeur d'un labyrinthe de height cellules de haut 
         et de width cellules de large 
@@ -16,7 +16,20 @@ class Maze:
         """
         self.height    = height
         self.width     = width
-        self.neighbors = {(i,j): set() for i in range(height) for j in range (width)}
+        if empty is True:
+            self.neighbors = {(i,j): set() for i in range(height) for j in range(width)}
+        else:
+            self.neighbors = {}
+            for i in range(height):
+                for j in range(width):
+                    if i+1 < height and j+1 < width:
+                        self.neighbors[(i, j)] = {(i+1, j), (i, j+1)}
+                    elif i+1 < height:
+                        self.neighbors[(i, j)] = {(i+1, j)}
+                    elif j+1 < width:
+                        self.neighbors[(i, j)] = {(i, j+1)}
+                    else:
+                        self.neighbors[(i, j)] = set()
 
     def info(self):
         """
