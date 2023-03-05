@@ -283,3 +283,38 @@ class Maze:
         for j in range(width-1):
             maze.remove_wall((height-1, j), (height-1, j+1))
         return maze
+
+
+    @classmethod
+    def gen_fusion(cls, height: int, width: int) -> 'Maze':
+        """Génère un labyrinthe aléatoire selon l'algorithme "Fusion des chemins"
+
+        Parameters
+        ----------
+        height : :class:`int`
+            Hauteur du labyrinthe
+        width : :class:`int`
+            Largeur du labyrinthe
+
+        Returns
+        -------
+        :class:`Maze`
+            Labyrinthe généré
+        """
+        maze = Maze(height, width, False)
+        labels = {c : i+1 for i, c in enumerate(maze.get_cells())}
+        shuffle_walls = maze.get_walls()
+        random.shuffle(shuffle_walls)
+        
+        count = 0
+        for c1, c2 in shuffle_walls:
+            if labels[c1] != labels[c2]:
+                maze.remove_wall(c1, c2)
+                count += 1
+                for c in labels:
+                    if labels[c] == labels[c2]:
+                        labels[c] = labels[c1]
+                # labels[c2] = labels[c1]
+            if count == height*width-1:
+                return maze
+        return maze
