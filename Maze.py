@@ -318,3 +318,38 @@ class Maze:
             if count == height*width-1:
                 return maze
         return maze
+
+
+    @classmethod
+    def gen_exploration(cls, height: int, width: int) -> 'Maze':
+        """Génère un labyrinthe aléatoire selon l'algorithme "Exploration exhaustive"
+
+        Parameters
+        ----------
+        height : :class:`int`
+            Hauteur du labyrinthe
+        width : :class:`int`
+            Largeur du labyrinthe
+
+        Returns
+        -------
+        :class:`Maze`
+            Labyrinthe généré
+        """
+        maze = Maze(height, width, False)
+        stack = []
+        visited = []
+        current_cell = random.choice(maze.get_cells())
+        visited.append(current_cell)
+        stack.append(current_cell)
+        while len(stack) > 0:
+            current_cell = stack.pop()
+            neighbors = list(set(maze.get_contiguous_cells(current_cell)) - set(maze.get_reachable_cells(current_cell)))
+            not_visited_neighbors = list(set(neighbors) - set(visited))
+            if len(neighbors) > 0 and len(not_visited_neighbors) > 0:
+                stack.append(current_cell)
+                random_neighbor = random.choice(not_visited_neighbors)
+                maze.remove_wall(current_cell, random_neighbor)
+                visited.append(random_neighbor)
+                stack.append(random_neighbor)
+        return maze
