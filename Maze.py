@@ -244,3 +244,42 @@ class Maze:
             elif c_east in walls:
                 maze.remove_wall((x, y), (x, y+1))
         return maze
+
+
+    @classmethod
+    def gen_sidewinder(cls, height: int, width: int) -> 'Maze':
+        """Génère un labyrinthe aléatoire selon l'algorithme "Sidewinder"
+
+        Parameters
+        ----------
+        height : :class:`int`
+            Hauteur du labyrinthe
+        width : :class:`int`
+            Largeur du labyrinthe
+
+        Returns
+        -------
+        :class:`Maze`
+            Labyrinthe généré
+        """
+        maze = Maze(height, width, False)
+        for i in range(height-2):
+            sequence = []
+            for j in range(width-2):
+                # print(i, j)
+                sequence.append((i, j))
+                if random.randint(0, 1):
+                    last_cell = (i, j+1)
+                    maze.remove_wall((i, j), (i, j+1))
+                else:
+                    random_cell = random.choice(sequence)
+                    last_cell = (random_cell[0]+1, random_cell[1])
+                    maze.remove_wall(random_cell, (random_cell[0]+1, random_cell[1]))
+                    sequence = []
+            sequence.append(last_cell)
+            random_cell = random.choice(sequence)
+            maze.remove_wall(random_cell, (random_cell[0]+1, random_cell[1]))
+        # casser tous les murs est de la dernière ligne
+        for j in range(width-1):
+            maze.remove_wall((height-1, j), (height-1, j+1))
+        return maze
