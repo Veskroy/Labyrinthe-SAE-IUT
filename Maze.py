@@ -94,10 +94,26 @@ class Maze:
 
 
     def get_cells(self) -> list:
+        """Retourne la liste des cellules du labyrinthe
+
+        Returns
+        -------
+        :class:`list`
+            Liste des cellules du labyrinthe
+        """
         return list(self.neighbors.keys())
 
 
-    def add_wall(self, c1, c2):
+    def add_wall(self, c1: tuple, c2: tuple):
+        """Ajouter un mur entre deux cellules
+
+        Parameters
+        ----------
+        c1 : :class:`tuple`
+            Première cellule (ligne, colonne)
+        c2 : :class:`tuple`
+            Deuxième cellule (ligne, colonne)
+        """
         # Facultatif : on teste si les sommets sont bien dans le labyrinthe
         assert 0 <= c1[0] < self.height and \
             0 <= c1[1] < self.width and \
@@ -111,7 +127,16 @@ class Maze:
             self.neighbors[c2].remove(c1) # on le retire
 
 
-    def remove_wall(self, c1, c2) -> None:
+    def remove_wall(self, c1: tuple, c2: tuple) -> None:
+        """Supprime un mur entre deux cellules
+
+        Parameters
+        ----------
+        c1 : :class:`tuple`
+            Première cellule (ligne, colonne)
+        c2 : :class:`tuple`
+            Deuxième cellule (ligne, colonne)
+        """
         assert 0 <= c1[0] < self.height and \
             0 <= c1[1] < self.width and \
             0 <= c2[0] < self.height and \
@@ -123,8 +148,12 @@ class Maze:
 
 
     def get_walls(self) -> list:
-        """
-        Retourne la liste des murs du labyrinthe
+        """Retourne la liste des murs du labyrinthe
+
+        Returns
+        -------
+        :class:`list`
+            Liste des murs du labyrinthe
         """
         walls = []
         for c1 in self.get_cells():
@@ -136,22 +165,29 @@ class Maze:
 
 
     def fill(self) -> None:
-        """
-        Remplit le labyrinthe en ajoutant tous les murs
+        """Remplit le labyrinthe en ajoutant tous les murs
         """
         self.neighbors = Maze(self.height, self.width, False).neighbors
 
 
     def empty(self) -> None:
-        """
-        Vide le labyrinthe en supprimant tous les murs
+        """Vide le labyrinthe en supprimant tous les murs
         """
         self.neighbors = Maze(self.height, self.width, True).neighbors
 
 
     def get_contiguous_cells(self, c: tuple) -> list:
-        """
-        Retourne la liste des cellules contigues à la cellule c
+        """Retourne la liste des cellules contigues à la cellule c
+
+        Parameters
+        ----------
+        c : :class:`tuple`
+            Cellule (ligne, colonne)
+
+        Returns
+        -------
+        :class:`list`
+            Liste des cellules contigues à la cellule c
         """
         # méthode précédente
         # return list(Maze(self.height, self.width, True).neighbors[c])
@@ -165,16 +201,36 @@ class Maze:
 
 
     def get_reachable_cells(self, c: tuple) -> list:
-        """
-        Retourne la liste des cellules accessibles à partir de la cellule c
+        """Retourne la liste des cellules accessibles à partir de la cellule c
+
+        Parameters
+        ----------
+        c : :class:`tuple`
+            Cellule (ligne, colonne)
+
+        Returns
+        -------
+        :class:`list`
+            Liste des cellules accessibles à partir de la cellule c
         """
         return list(self.neighbors[c])
 
 
     @classmethod
     def gen_btree(cls, height: int, width: int) -> 'Maze':
-        """
-        Génère un labyrinthe aléatoire selon l'algorithme "Binary Tree"
+        """Génère un labyrinthe aléatoire selon l'algorithme "Binary Tree"
+
+        Parameters
+        ----------
+        height : :class:`int`
+            Hauteur du labyrinthe
+        width : :class:`int`
+            Largeur du labyrinthe
+
+        Returns
+        -------
+        :class:`Maze`
+            Labyrinthe généré
         """
         maze = Maze(height, width, False)
         for x, y in maze.get_cells():
