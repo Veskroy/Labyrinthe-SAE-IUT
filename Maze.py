@@ -263,9 +263,9 @@ class Maze:
             Labyrinthe généré
         """
         maze = Maze(height, width, False)
-        for i in range(height-2):
+        for i in range(height-2): 
             sequence = []
-            for j in range(width-2):
+            for j in range(width-1):
                 # print(i, j)
                 sequence.append((i, j))
                 if random.randint(0, 1):
@@ -277,6 +277,8 @@ class Maze:
                     maze.remove_wall(random_cell, (random_cell[0]+1, random_cell[1]))
                     sequence = []
             sequence.append(last_cell)
+            # a la place du 2 sur lgne 266 higth - 2 on peut mettre
+            #if random_cell[0]+1 < self.width:  
             random_cell = random.choice(sequence)
             maze.remove_wall(random_cell, (random_cell[0]+1, random_cell[1]))
         # casser tous les murs est de la dernière ligne
@@ -353,3 +355,97 @@ class Maze:
                 visited.append(random_neighbor)
                 stack.append(random_neighbor)
         return maze
+    
+    
+    def overlay(self, content=None):
+        """
+        Rendu en mode texte, sur la sortie standard, 
+        d'un labyrinthe avec du contenu dans les cellules
+        Argument:
+            content (dict) : dictionnaire tq content[cell] contient le caractère à afficher au milieu de la cellule
+        Retour:
+            string
+        """
+        if content is None:
+            content = {(i,j):' ' for i in range(self.height) for j in range(self.width)}
+        else:
+            # Python >=3.9
+            #content = content | {(i, j): ' ' for i in range(
+            #    self.height) for j in range(self.width) if (i,j) not in content}
+            # Python <3.9
+            new_content = {(i, j): ' ' for i in range(self.height) for j in range(self.width) if (i,j) not in content}
+            content = {**content, **new_content}
+        txt = r""
+        # Première ligne
+        txt += "┏"
+        for j in range(self.width-1):
+            txt += "━━━┳"
+        txt += "━━━┓\n"
+        txt += "┃"
+        for j in range(self.width-1):
+            txt += " "+content[(0,j)]+" ┃" if (0,j+1) not in self.neighbors[(0,j)] else " "+content[(0,j)]+"  "
+        txt += " "+content[(0,self.width-1)]+" ┃\n"
+        # Lignes normales
+        for i in range(self.height-1):
+            txt += "┣"
+            for j in range(self.width-1):
+                txt += "━━━╋" if (i+1,j) not in self.neighbors[(i,j)] else "   ╋"
+            txt += "━━━┫\n" if (i+1,self.width-1) not in self.neighbors[(i,self.width-1)] else "   ┫\n"
+            txt += "┃"
+            for j in range(self.width):
+                txt += " "+content[(i+1,j)]+" ┃" if (i+1,j+1) not in self.neighbors[(i+1,j)] else " "+content[(i+1,j)]+"  "
+            txt += "\n"
+        # Bas du tableau
+        txt += "┗"
+        for i in range(self.width-1):
+            txt += "━━━┻"
+        txt += "━━━┛\n"
+        return txt
+    
+    
+
+"""""
+    @classmethod
+    def gen_wilson(cls,height: int, width: int):
+       
+        Génère un labyrinthe aléatoire selon l'algorithme de "Wilson"
+             
+        Parameters
+        ----------
+        height : :class:`int`
+            Hauteur du labyrinthe
+        width : :class:`int`
+            Largeur du labyrinthe
+
+        Returns
+        -------
+        :class:`Maze`
+            Labyrinthe généré
+       
+      
+        maze = Maze(height, width, False)
+        all_nomark=maze.get_cells()
+        current_cell = random.choice(all_nomark)
+        del all_nomark[all_nomark.index(current_cell)]
+
+        while not len(all_nomark) == 0:
+            parcour=[]
+            current_cell = random.choice(all_nomark)
+            start_cell=random.choice(maze.get_cells())
+            while start_cell != current_cell:
+                parcour.append(start_cell)
+                print (parcour) 
+                start_cell=random.choice(maze.get_contiguous_cells(start_cell))
+                if set(maze.get_contiguous_cells(start_cell))<=set(parcour):
+                    start_cell=parcour[len(parcour)-2]
+                elif start_cell in parcour:
+                    start_cell=parcour[len(parcour)-1]
+                    
+                else:
+                    maze.remove_wall(start_cell,parcour[len(parcour)-1])
+            del all_nomark[all_nomark.index(current_cell)]
+        return maze
+            
+                 '"""   
+           
+ 

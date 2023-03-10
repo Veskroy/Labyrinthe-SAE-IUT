@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-*.
 __pycache__/
 main.py
-=======
-__pycache__/
-main.py
->>>>>>> origin/main
+.vscode/
+.idea/
+petittest.py
