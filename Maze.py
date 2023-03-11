@@ -439,36 +439,81 @@ class Maze:
             marks += visited
         return maze
 
-    def solve_dfs_dico(self,start:tuple, stop:tuple):
+    # def solve_dfs_dico(self,start:tuple, stop:tuple):
+    #     #initilisation 
+    #     marks = [start]
+    #     pred={start:start}
+    #     pile=[start]
+    #     new_cell=pile[-1]
+    #     cell=new_cell
+    #     while len(list(set(self.get_cells()) - set(marks))) != 0:
+    #         if new_cell == stop:
+    #             pred[new_cell]=cell
+    #             break
+    #         elif len(list(set(self.get_reachable_cells(new_cell))- set(marks))) == 0 :
+    #             new_cell=pile[pile.index(new_cell)-1]
+    #         else:
+    #             for voisin in (self.get_reachable_cells(new_cell)):
+    #                 if not voisin in marks:
+    #                     pile.append(voisin)
+    #                     marks.append(voisin)
+    #             pred[new_cell]=cell
+    #             cell=new_cell
+    #             new_cell=pile[-1]
+    #     return pred
+    
+    
+    def solve_dfs_dico(self, start:tuple, stop:tuple):
         #initilisation 
         marks = [start]
-        pred={start:start}
-        pile=[start]
-        new_cell=pile[-1]
-        cell=new_cell
-        while len(list(set(self.get_cells())- set(marks))) != 0:
-            if new_cell == stop:
-                pred[new_cell]=cell
+        pred = {start:start}
+        pile = [start]
+        while len(list(set(self.get_cells()) - set(marks))) != 0:
+            c = pile.pop()
+            if c == stop:
                 break
-            elif len(list(set(self.get_reachable_cells(new_cell))- set(marks))) == 0 :
-                new_cell=pile[pile.index(new_cell)-1]
             else:
-                for voisin in (self.get_reachable_cells(new_cell)):
-                    if not voisin in marks:
+                for voisin in self.get_reachable_cells(c):
+                    if voisin not in marks:
                         pile.append(voisin)
                         marks.append(voisin)
-                pred[new_cell]=cell
-                cell=new_cell
-                new_cell=pile[-1]
+                        pred[voisin] = c
         return pred
-    
 
-    def solve_dfs(self,start:tuple, stop:tuple):
-        pred= self.solve_dfs_dico( start, stop)
-        cell= stop
-        chemin={}
-        while cell != start:
-            chemin[cell]='*'
-            cell=pred[cell]
-        chemin[start]='*'
+    def solve_dfs(self, start:tuple, stop:tuple):
+        pred = self.solve_dfs_dico(start, stop)
+        c = stop
+        chemin = {}
+        while c != start:
+            chemin[c] = '*'
+            c = pred[c]
+        chemin[start] = '*'
         return chemin
+    
+    
+    # Une seule et même fonction
+    """
+    def solve_dfs(self, start:tuple, stop:tuple):
+        #initilisation 
+        marks = [start]
+        pred = {start:start}
+        pile = [start]
+        while len(list(set(self.get_cells()) - set(marks))) != 0:
+            c = pile.pop()
+            if c == stop:
+                break
+            else:
+                for voisin in self.get_reachable_cells(c):
+                    if voisin not in marks:
+                        pile.append(voisin)
+                        marks.append(voisin)
+                        pred[voisin] = c
+
+        c = stop
+        chemin = {}
+        while c != start:
+            chemin[c] = '*'
+            c = pred[c]
+        chemin[start] = '*'
+        return chemin
+    """
