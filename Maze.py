@@ -402,14 +402,10 @@ class Maze:
         txt += "━━━┛\n"
         return txt
     
-    
-
-"""""
     @classmethod
-    def gen_wilson(cls,height: int, width: int):
-       
-        Génère un labyrinthe aléatoire selon l'algorithme de "Wilson"
-             
+    def gen_wilson(cls, height: int, width: int) -> 'Maze':
+        """Génère un labyrinthe aléatoire selon l'algorithme de Wilson
+
         Parameters
         ----------
         height : :class:`int`
@@ -421,31 +417,58 @@ class Maze:
         -------
         :class:`Maze`
             Labyrinthe généré
-       
-      
+        """
         maze = Maze(height, width, False)
-        all_nomark=maze.get_cells()
-        current_cell = random.choice(all_nomark)
-        del all_nomark[all_nomark.index(current_cell)]
-
-        while not len(all_nomark) == 0:
-            parcour=[]
-            current_cell = random.choice(all_nomark)
-            start_cell=random.choice(maze.get_cells())
-            while start_cell != current_cell:
-                parcour.append(start_cell)
-                print (parcour) 
-                start_cell=random.choice(maze.get_contiguous_cells(start_cell))
-                if set(maze.get_contiguous_cells(start_cell))<=set(parcour):
-                    start_cell=parcour[len(parcour)-2]
-                elif start_cell in parcour:
-                    start_cell=parcour[len(parcour)-1]
-                    
+        marks = []
+        marks.append(random.choice(maze.get_cells()))
+        while len(list(set(maze.get_cells()) - set(marks))) != 0:
+            start_cell = cell = random.choice(list(set(maze.get_cells()) - set(marks)))
+            visited = []
+            visited.append(start_cell)
+            while cell not in marks:
+                neighbors = list(set(maze.get_contiguous_cells(cell)) - set(maze.get_reachable_cells(cell)))
+                neighbors.remove(cell) if cell in neighbors else None
+                cell = random.choice(neighbors)
+                if cell in visited:
+                    visited = []
+                    break
                 else:
-                    maze.remove_wall(start_cell,parcour[len(parcour)-1])
-            del all_nomark[all_nomark.index(current_cell)]
+                    visited.append(cell)
+            for i in range(len(visited)-1):
+                maze.remove_wall(visited[i], visited[i+1])
+            marks += visited
         return maze
-            
-                 '"""   
-           
- 
+
+    def solve_dfs_dico(self,start:tuple, stop:tuple):
+        #initilisation 
+        marks = [start]
+        pred={start:start}
+        pile=[start]
+        new_cell=pile[-1]
+        cell=new_cell
+        while len(list(set(self.get_cells())- set(marks))) != 0:
+            if new_cell == stop:
+                pred[new_cell]=cell
+                break
+            elif len(list(set(self.get_reachable_cells(new_cell))- set(marks))) == 0 :
+                new_cell=pile[pile.index(new_cell)-1]
+            else:
+                for voisin in (self.get_reachable_cells(new_cell)):
+                    if not voisin in marks:
+                        pile.append(voisin)
+                        marks.append(voisin)
+                pred[new_cell]=cell
+                cell=new_cell
+                new_cell=pile[-1]
+        return pred
+    
+
+    def solve_dfs(self,start:tuple, stop:tuple):
+        pred= self.solve_dfs_dico( start, stop)
+        cell= stop
+        chemin={}
+        while cell != start:
+            chemin[cell]='*'
+            cell=pred[cell]
+        chemin[start]='*'
+        return chemin
