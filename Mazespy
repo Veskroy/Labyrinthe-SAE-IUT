@@ -1,5 +1,5 @@
 import random
-
+import math
 
 class Maze:
     """
@@ -303,7 +303,7 @@ class Maze:
         :class:`Maze`
             Labyrinthe généré
         """
-        maze = Maze(height, width, False)
+        maze = cls(height, width, False)
         labels = {c : i+1 for i, c in enumerate(maze.get_cells())}
         shuffle_walls = maze.get_walls()
         random.shuffle(shuffle_walls)
@@ -313,10 +313,7 @@ class Maze:
             if labels[c1] != labels[c2]:
                 maze.remove_wall(c1, c2)
                 count += 1
-                for c in labels:
-                    if labels[c] == labels[c2]:
-                        labels[c] = labels[c1]
-                # labels[c2] = labels[c1]
+                labels = {c : labels[c] if labels[c] != labels[c2] else labels[c1] for c in labels}
             if count == height*width-1:
                 return maze
         return maze
@@ -439,49 +436,31 @@ class Maze:
             marks += visited
         return maze
 
-    # def solve_dfs_dico(self,start:tuple, stop:tuple):
-    #     #initilisation 
-    #     marks = [start]
-    #     pred={start:start}
-    #     pile=[start]
-    #     new_cell=pile[-1]
-    #     cell=new_cell
-    #     while len(list(set(self.get_cells()) - set(marks))) != 0:
-    #         if new_cell == stop:
-    #             pred[new_cell]=cell
-    #             break
-    #         elif len(list(set(self.get_reachable_cells(new_cell))- set(marks))) == 0 :
-    #             new_cell=pile[pile.index(new_cell)-1]
-    #         else:
-    #             for voisin in (self.get_reachable_cells(new_cell)):
-    #                 if not voisin in marks:
-    #                     pile.append(voisin)
-    #                     marks.append(voisin)
-    #             pred[new_cell]=cell
-    #             cell=new_cell
-    #             new_cell=pile[-1]
-    #     return pred
-    
-    
-    def solve_dfs_dico(self, start:tuple, stop:tuple):
+    def solve_bfs(self, start:tuple, stop:tuple):
+        """ Resous un labyrinthe grace au parcour en largeur
+
+        Argument:
+            start (tuple): cellule de depart
+            stop (tuple): cellule d'arriver
+
+        Returns:
+            dict: chemin des prèdecesseur du point stop au point start 
+        """
         #initilisation 
         marks = [start]
         pred = {start:start}
-        pile = [start]
+        file = [start]
         while len(list(set(self.get_cells()) - set(marks))) != 0:
-            c = pile.pop()
+            c = file.pop(0)
             if c == stop:
                 break
             else:
                 for voisin in self.get_reachable_cells(c):
                     if voisin not in marks:
-                        pile.append(voisin)
+                        file.append(voisin)
                         marks.append(voisin)
                         pred[voisin] = c
-        return pred
 
-    def solve_dfs(self, start:tuple, stop:tuple):
-        pred = self.solve_dfs_dico(start, stop)
         c = stop
         chemin = {}
         while c != start:
@@ -489,11 +468,17 @@ class Maze:
             c = pred[c]
         chemin[start] = '*'
         return chemin
-    
-    
-    # Une seule et même fonction
-    """
+
     def solve_dfs(self, start:tuple, stop:tuple):
+        """ Resous un labyrinthe grace au parcour en pronfondeur
+
+        Args:
+            start (tuple): _cellule de depart
+            stop (tuple): cellule d'arriver
+
+        Returns:
+            _dict: chemin des prèdecesseur du point stop au point start 
+        """
         #initilisation 
         marks = [start]
         pred = {start:start}
@@ -516,4 +501,63 @@ class Maze:
             c = pred[c]
         chemin[start] = '*'
         return chemin
-    """
+    
+
+   
+
+    def solve_rhr(self, start:tuple, stop:tuple):
+        """Resolution d'un labyrinthe avec la main sur le mur 
+
+        Argument:
+            start (tuple): _cellule de depart
+            stop (tuple): cellule d'arriver
+            
+
+        Returns:
+            _dict: chemin des prèdecesseur du point stop au point start
+        """
+        marks = [start]
+        pred = {start:start}
+        pile = [start]
+        while len(list(set(self.get_cells()) - set(marks))) != 0:
+            c = pile.pop()
+            if c == stop:
+                break
+            else:
+                tri= []
+                base=self.get_reachable_cells(c)
+                tri.append((c[0], c[1]-1)) if (c[0], c[1]-1) in base else None
+                tri.append((c[0]-1, c[1])) if (c[0]-1, c[1]) in base else None
+                tri.append((c[0], c[1]+1)) if (c[0], c[1]+1) in base else None
+                tri.append((c[0]+1, c[1])) if (c[0]+1, c[1]) in base else None
+                for voisin in tri:
+                    if voisin not in marks:
+                        pile.append(voisin)
+                        marks.append(voisin)
+                        pred[voisin] = c
+
+        c = stop
+        chemin = {}
+        while c != start:
+            chemin[c] = '*'
+            c = pred[c]
+        chemin[start] = '*'
+        return chemin
+    
+    def distance_geo(self,c1:tuple,c2:tuple):
+        rhr=len(self.solve_rhr(c1, c2))
+        dfs=len(self.solve_dfs(c1,c2))
+        bfs=len(self.solve_bfs(c1,c2))
+        message = f"Deplacement Minimale {dfs}"
+        if rhr<dfs and rhr<bfs:
+            message=f"Parcour main Droite: {rhr}"
+        elif dfs<rhr and dfs<bfs:
+            message=f"Parcour en profondeur:{dfs}"
+        elif bfs<rhr and bfs<dfs:
+            message = f"parcour en largeur {bfs}"
+        return message 
+
+    def distance_man(self,c1:tuple,c2:tuple):
+       dx= math.sqrt((c1[0] - c2[0])**2) 
+       dy=math.sqrt((c1[1] - c2[1])**2)
+       return dx + dy
