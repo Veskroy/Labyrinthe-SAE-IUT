@@ -313,10 +313,7 @@ class Maze:
             if labels[c1] != labels[c2]:
                 maze.remove_wall(c1, c2)
                 count += 1
-                for c in labels:
-                    if labels[c] == labels[c2]:
-                        labels[c] = labels[c1]
-                # labels[c2] = labels[c1]
+                labels = {c : labels[c] if labels[c] != labels[c2] else labels[c1] for c in labels}
             if count == height*width-1:
                 return maze
         return maze
